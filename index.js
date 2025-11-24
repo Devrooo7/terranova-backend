@@ -8,9 +8,12 @@ app.use(bodyParser.json());
 
 // === Inicializar Firebase ===
 let serviceAccount;
+
 if (process.env.FIREBASE_SA) {
   try {
     serviceAccount = JSON.parse(process.env.FIREBASE_SA);
+    // Reemplaza los \n literales por saltos de línea reales
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
   } catch (e) {
     console.error("❌ FIREBASE_SA no es JSON válido:", e.message);
     process.exit(1);
@@ -27,6 +30,7 @@ if (process.env.FIREBASE_SA) {
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
+
 
 const db = admin.firestore();
 console.log("✅ Firebase inicializado correctamente");
